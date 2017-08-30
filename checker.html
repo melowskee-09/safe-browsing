@@ -38,7 +38,7 @@ $(document).ready(function() {
 				data: $('#check_form').serialize(),
 				success: function(data) {
 					if(data == "malware"){
-						var url = "notice.php?url="+$('#url').val();
+						var url = "notice.html?url="+$('#url').val();
 						location.href=url;
 					}
 					else{
