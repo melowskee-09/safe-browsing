@@ -1,0 +1,109 @@
+<html>
+<head>
+<title>Safe Browsing Checker</title>
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://use.fontawesome.com/400adf9486.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.min.js"></script>
+<script>
+$(document).ready(function() {
+	$("#check_form").validate({
+		rules: {
+			url: {
+				required: true
+			}
+		},
+		ignore: [],
+		errorElement: "div",
+		errorPlacement: function(error, element) {
+			//$(element).after(error);
+			$(element).parent('.form-group').after(error);
+		},
+		submitHandler: function(form) {
+			$.ajax({
+				url: "check_safe_browsing.php",
+				type: 'POST',
+				async: false,
+				cache: false,
+				error: function(XMLHttpRequest, textStatus, errorThrown) {
+					alert('Error Registering user');
+				},
+				data: $('#check_form').serialize(),
+				success: function(data) {
+					if(data == "malware"){
+						var url = "notice.php?url="+$('#url').val();
+						location.href=url;
+					}
+					else{
+						
+						$('#alert-container').html(setNotice($('#url').val()));
+					}
+				}
+			});
+		}
+	});
+	
+	$("#home_btn").click(function(){
+		location.href = "index.php"; 
+		//window.history.go(-1); 
+		//return false;
+	});
+});
+
+window.setTimeout(function() {
+    $(".alert").fadeTo(500, 0).slideUp(500, function(){
+        $(this).remove(); 
+    });
+}, 10000);
+
+function setNotice(url){
+	var notice = "<div class='alert alert-success alert-dismissable fade in'>"+
+				 "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>"+
+				 "<p style='font-size: 18px;'>Current status</p>"+ 
+				 "<p style='font-size: 24px;'>Check a specific URL</p>"+
+				 "<p>It's hard to provide a simple safety status for sites like facebook.com/, which have a lot of content. Sites that are generally safe sometimes contain some unsafe content (for example, in blogs or comments). For more detailed safety info, check a specific directory or webpage.</p>"+
+				 
+				 "</div>";
+	return notice;
+}
+</script>
+
+</head>
+<body>
+<div class="container" style="margin-top:10%;">
+	<div class="row">
+		<div class="col-md-offset-3 col-md-6">
+			<div class="panel panel-default">
+				<div class="panel-heading"><i class="fa fa-check-circle" aria-hidden="true" style="font-size:18px;"></i> <b>Check Safe Browsing</b></div>
+				<div class="panel-body">
+					<form id="check_form" method="POST">
+					<input type="hidden" name="type" value="single">
+					<div class="input-group">
+					  <input type="text" name="url" id="url" class="form-control" placeholder="Enter URL...">
+					  <span class="input-group-btn">
+						<button class="btn btn-secondary" type="submit">Submit</button>
+					  </span>
+					</div>
+					
+					</form>
+				</div>
+			</div>
+			<div id="alert-container">
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-offset-3 col-md-6 text-center">
+			<button class="btn btn-default" id="home_btn"><i class="fa fa-home"></i> HOME</button>
+		</div>
+	</div>
+</div>
+</body>
+</html>
