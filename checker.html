@@ -38,7 +38,7 @@ $(document).ready(function() {
 				data: $('#check_form').serialize(),
 				success: function(data) {
 					if(data == "malware"){
-						var url = "notice.html?url="+$('#url').val();
+						var url = "notice.php?url="+$('#url').val();
 						location.href=url;
 					}
 					else{
@@ -51,7 +51,7 @@ $(document).ready(function() {
 	});
 	
 	$("#home_btn").click(function(){
-		location.href = "index.php"; 
+		location.href = "index.html"; 
 		//window.history.go(-1); 
 		//return false;
 	});
